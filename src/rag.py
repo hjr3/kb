@@ -5,7 +5,7 @@ from typing import List, Dict, Any, Optional
 import yaml
 from datetime import datetime
 
-from langchain.text_splitter import MarkdownTextSplitter
+from langchain.text_splitter import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langchain_chroma import Chroma
@@ -106,7 +106,21 @@ class ObsidianRAG:
             model_kwargs={'device': 'cpu'}
         )
         
-        self.text_splitter = MarkdownTextSplitter(chunk_size=1000, chunk_overlap=200)
+        self.header_splitter = MarkdownHeaderTextSplitter(
+            headers_to_split_on=[
+                ("#", "header1"),
+                ("##", "header2"),
+                ("###", "header3"),
+                ("####", "header4"),
+                ("#####", "header5"),
+            ]
+        )
+        
+        self.text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=500,
+            chunk_overlap=50,
+            separators=["\n\n", "\n", ". ", " ", ""]
+        )
         
         if os.path.exists(persist_directory):
             print(f"Loading existing vector store from: {persist_directory}")
@@ -124,6 +138,39 @@ class ObsidianRAG:
             temperature=0
         )
 
+    def _split_document(self, doc: Document) -> List[Document]:
+        """Split a document using header-based splitting first, then chunk if needed"""
+        try:
+            splits = self.header_splitter.split_text(doc.page_content)
+            
+            documents = []
+            for split in splits:
+                enhanced_metadata = doc.metadata.copy()
+                enhanced_metadata.update({
+                    f"header_{level}": split.metadata.get(level, "")
+                    for level in ["header1", "header2", "header3", "header4", "header5"]
+                })
+                
+                # If the chunk is still too large, split it further
+                if len(split.page_content) > 500:
+                    subsplits = self.text_splitter.split_text(split.page_content)
+                    for subsplit in subsplits:
+                        documents.append(Document(
+                            page_content=subsplit,
+                            metadata=enhanced_metadata
+                        ))
+                else:
+                    documents.append(Document(
+                        page_content=split.page_content,
+                        metadata=enhanced_metadata
+                    ))
+                    
+            return documents
+            
+        except Exception as e:
+            print(f"Error splitting document {doc.metadata.get('source')}: {e}")
+            return self.text_splitter.split_documents([doc])
+
     def initialize_vector_store(self, force_reload: bool = False) -> Optional[int]:
         """Load notes and initialize the vector store if it doesn't exist or force_reload is True"""
         if not force_reload and self.vector_store is not None:
@@ -134,16 +181,11 @@ class ObsidianRAG:
         documents = self.loader.load_notes()
         print(f"Loaded {len(documents)} documents")
         
-        print("Splitting documents into chunks...")
+        print("Splitting documents...")
         splits = []
         for doc in documents:
-            chunks = self.text_splitter.split_text(doc.page_content)
-            splits.extend([
-                Document(
-                    page_content=chunk,
-                    metadata=doc.metadata
-                ) for chunk in chunks
-            ])
+            doc_splits = self._split_document(doc)
+            splits.extend(doc_splits)
         print(f"Created {len(splits)} chunks")
         
         print("Creating vector store...")
