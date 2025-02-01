@@ -1,19 +1,22 @@
 [project]
 name = "kb"
 version = "0.1.0"
-description = "Add your description here"
+description = "Personal knowledge base"
 readme = "README.md"
 requires-python = "==3.10.*"
 dependencies = [
     "anthropic>=0.45.2",
     "chromadb>=0.6.3",
+    "fastapi>=0.115.8",
     "langchain>=0.3.17",
     "langchain-anthropic>=0.3.5",
     "langchain-chroma>=0.2.1",
     "langchain-huggingface>=0.1.2",
     "markdown>=3.7",
+    "pytest-asyncio>=0.25.3",
     "python-dotenv>=1.0.1",
     "pyyaml>=6.0.2",
+    "structlog>=25.1.0",
     "torch==2.2",
     "torchvision>=0.17.0",
 ]
@@ -30,3 +33,17 @@ torchvision = [
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
 explicit = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]
+lint = [
+    "ruff>=0.9.4",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"

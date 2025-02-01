@@ -7,10 +7,13 @@ A personal knowledge base
 This project uses `uv`:
 
 - `source .venv/bin/activate`
+- `uv pip install -e .` - make an editable kb project
+    - Note: pytorch 2.2 is used to support macOS x86_64
+- `uvicorn kb.api:app --reload`
 
-Note: pytorch 2.2 is used to support macOS x86_64
+### .env
 
-## .env
+Make sure the following environment variables are specified
 
 ```
 ANTHROPIC_API_KEY=secret
