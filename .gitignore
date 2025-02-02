@@ -1,8 +1,12 @@
 chroma_db
 .venv
 .env
+src/kb_client
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Distribution / packaging
+*.egg-info/

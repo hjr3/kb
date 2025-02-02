@@ -702,15 +702,18 @@ source = { virtual = "." }
 dependencies = [
     { name = "anthropic" },
     { name = "chromadb" },
+    { name = "click" },
     { name = "fastapi" },
     { name = "langchain" },
     { name = "langchain-anthropic" },
     { name = "langchain-chroma" },
     { name = "langchain-huggingface" },
     { name = "markdown" },
+    { name = "openapi-python-client" },
     { name = "pytest-asyncio" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
+    { name = "rich" },
     { name = "structlog" },
     { name = "torch", version = "2.2.0", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or sys_platform == 'darwin'" },
     { name = "torch", version = "2.2.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux')" },
@@ -730,15 +733,18 @@ lint = [
 requires-dist = [
     { name = "anthropic", specifier = ">=0.45.2" },
     { name = "chromadb", specifier = ">=0.6.3" },
+    { name = "click", specifier = ">=8.1.8" },
     { name = "fastapi", specifier = ">=0.115.8" },
     { name = "langchain", specifier = ">=0.3.17" },
     { name = "langchain-anthropic", specifier = ">=0.3.5" },
     { name = "langchain-chroma", specifier = ">=0.2.1" },
     { name = "langchain-huggingface", specifier = ">=0.1.2" },
     { name = "markdown", specifier = ">=3.7" },
+    { name = "openapi-python-client", specifier = ">=0.23.1" },
     { name = "pytest-asyncio", specifier = ">=0.25.3" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "rich", specifier = ">=13.9.4" },
     { name = "structlog", specifier = ">=25.1.0" },
     { name = "torch", specifier = "==2.2", index = "https://download.pytorch.org/whl/cpu" },
     { name = "torchvision", specifier = ">=0.17.0", index = "https://download.pytorch.org/whl/cpu" },
@@ -1054,6 +1060,28 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/63/47/3dc0b075ab539f16b3d8b09df6b504f51836086ee709690a6278d791737d/onnxruntime-1.20.1-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:d82daaec24045a2e87598b8ac2b417b1cce623244e80e663882e9fe1aae86410", size = 13330452 },
     { url = "https://files.pythonhosted.org/packages/27/ef/80fab86289ecc01a734b7ddf115dfb93d8b2e004bd1e1977e12881c72b12/onnxruntime-1.20.1-cp310-cp310-win32.whl", hash = "sha256:4c4b251a725a3b8cf2aab284f7d940c26094ecd9d442f07dd81ab5470e99b83f", size = 9813849 },
     { url = "https://files.pythonhosted.org/packages/a9/e6/33ab10066c9875a29d55e66ae97c3bf91b9b9b987179455d67c32261a49c/onnxruntime-1.20.1-cp310-cp310-win_amd64.whl", hash = "sha256:d3b616bb53a77a9463707bb313637223380fc327f5064c9a782e8ec69c22e6a2", size = 11329702 },
+]
+
+[[package]]
+name = "openapi-python-client"
+version = "0.23.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "httpx" },
+    { name = "jinja2" },
+    { name = "pydantic" },
+    { name = "python-dateutil" },
+    { name = "ruamel-yaml" },
+    { name = "ruff" },
+    { name = "shellingham" },
+    { name = "typer" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/09/0d/b18fcaf82f6e0ba1eb9eaf0b76ce25283b46521a775330299d298017861b/openapi_python_client-0.23.1.tar.gz", hash = "sha256:f45c54708bc883ba4727162137cb1e058305ad72dc76df618e5505d4a4a0c851", size = 123161 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fc/4c/8be4dee3b3b5ee42584413c3cc1cef811635159be1488402a99799c293e2/openapi_python_client-0.23.1-py3-none-any.whl", hash = "sha256:3a6e571ed20cde82d9c51c4a81e037600ae798ec9d3aba0cab4b4f89f4f20ef3", size = 179495 },
 ]
 
 [[package]]
@@ -1588,6 +1616,35 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/aa/65/7d973b89c4d2351d7fb232c2e452547ddfa243e93131e7cfa766da627b52/rsa-4.9.tar.gz", hash = "sha256:e38464a49c6c85d7f1351b0126661487a7e0a14a50f1675ec50eb34d4f20ef21", size = 29711 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl", hash = "sha256:90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7", size = 34315 },
+]
+
+[[package]]
+name = "ruamel-yaml"
+version = "0.18.10"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "ruamel-yaml-clib", marker = "platform_python_implementation == 'CPython'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ea/46/f44d8be06b85bc7c4d8c95d658be2b68f27711f279bf9dd0612a5e4794f5/ruamel.yaml-0.18.10.tar.gz", hash = "sha256:20c86ab29ac2153f80a428e1254a8adf686d3383df04490514ca3b79a362db58", size = 143447 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c2/36/dfc1ebc0081e6d39924a2cc53654497f967a084a436bb64402dfce4254d9/ruamel.yaml-0.18.10-py3-none-any.whl", hash = "sha256:30f22513ab2301b3d2b577adc121c6471f28734d3d9728581245f1e76468b4f1", size = 117729 },
+]
+
+[[package]]
+name = "ruamel-yaml-clib"
+version = "0.2.12"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/20/84/80203abff8ea4993a87d823a5f632e4d92831ef75d404c9fc78d0176d2b5/ruamel.yaml.clib-0.2.12.tar.gz", hash = "sha256:6c8fbb13ec503f99a91901ab46e0b07ae7941cd527393187039aec586fdfd36f", size = 225315 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/70/57/40a958e863e299f0c74ef32a3bde9f2d1ea8d69669368c0c502a0997f57f/ruamel.yaml.clib-0.2.12-cp310-cp310-macosx_13_0_arm64.whl", hash = "sha256:11f891336688faf5156a36293a9c362bdc7c88f03a8a027c2c1d8e0bcde998e5", size = 131301 },
+    { url = "https://files.pythonhosted.org/packages/98/a8/29a3eb437b12b95f50a6bcc3d7d7214301c6c529d8fdc227247fa84162b5/ruamel.yaml.clib-0.2.12-cp310-cp310-manylinux2014_aarch64.whl", hash = "sha256:a606ef75a60ecf3d924613892cc603b154178ee25abb3055db5062da811fd969", size = 633728 },
+    { url = "https://files.pythonhosted.org/packages/35/6d/ae05a87a3ad540259c3ad88d71275cbd1c0f2d30ae04c65dcbfb6dcd4b9f/ruamel.yaml.clib-0.2.12-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fd5415dded15c3822597455bc02bcd66e81ef8b7a48cb71a33628fc9fdde39df", size = 722230 },
+    { url = "https://files.pythonhosted.org/packages/7f/b7/20c6f3c0b656fe609675d69bc135c03aac9e3865912444be6339207b6648/ruamel.yaml.clib-0.2.12-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f66efbc1caa63c088dead1c4170d148eabc9b80d95fb75b6c92ac0aad2437d76", size = 686712 },
+    { url = "https://files.pythonhosted.org/packages/cd/11/d12dbf683471f888d354dac59593873c2b45feb193c5e3e0f2ebf85e68b9/ruamel.yaml.clib-0.2.12-cp310-cp310-musllinux_1_1_i686.whl", hash = "sha256:22353049ba4181685023b25b5b51a574bce33e7f51c759371a7422dcae5402a6", size = 663936 },
+    { url = "https://files.pythonhosted.org/packages/72/14/4c268f5077db5c83f743ee1daeb236269fa8577133a5cfa49f8b382baf13/ruamel.yaml.clib-0.2.12-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:932205970b9f9991b34f55136be327501903f7c66830e9760a8ffb15b07f05cd", size = 696580 },
+    { url = "https://files.pythonhosted.org/packages/30/fc/8cd12f189c6405a4c1cf37bd633aa740a9538c8e40497c231072d0fef5cf/ruamel.yaml.clib-0.2.12-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:a52d48f4e7bf9005e8f0a89209bf9a73f7190ddf0489eee5eb51377385f59f2a", size = 663393 },
+    { url = "https://files.pythonhosted.org/packages/80/29/c0a017b704aaf3cbf704989785cd9c5d5b8ccec2dae6ac0c53833c84e677/ruamel.yaml.clib-0.2.12-cp310-cp310-win32.whl", hash = "sha256:3eac5a91891ceb88138c113f9db04f3cebdae277f5d44eaa3651a4f573e6a5da", size = 100326 },
+    { url = "https://files.pythonhosted.org/packages/3a/65/fa39d74db4e2d0cd252355732d966a460a41cd01c6353b820a0952432839/ruamel.yaml.clib-0.2.12-cp310-cp310-win_amd64.whl", hash = "sha256:ab007f2f5a87bd08ab1499bdf96f3d5c6ad4dcfa364884cb4549aa0154b13a28", size = 118079 },
 ]
 
 [[package]]
