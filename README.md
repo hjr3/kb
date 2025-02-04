@@ -14,13 +14,17 @@ This project uses `uv`:
 - Generate API bindings for the cli: `openapi-python-client generate --url http://localhost:8000/openapi.json --output-path src/kb_client`
 - Run the cli: `python -m kb.cli`
 
-### .env
+### Configuration
 
-Make sure the following environment variables are specified
+Make sure the following environment variables are specified in `config.toml`
 
 ```
-ANTHROPIC_API_KEY=secret
-OBSIDIAN_VAULT_PATH=/path/to/vault
+[obsidian]
+vault="/path/to/vault"
+
+[llm]
+type="anthropic"
+api_key="secret"
 ```
 
 ## Tests

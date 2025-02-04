@@ -1,6 +1,6 @@
 chroma_db
 .venv
-.env
+config.toml
 src/kb_client
 
 # Byte-compiled / optimized / DLL files
