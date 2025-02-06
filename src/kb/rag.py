@@ -7,6 +7,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langchain_chroma import Chroma
 from langchain.schema import Document
+from langchain_ollama import ChatOllama
 import os
 
 from .obsidian import ObsidianLoader
@@ -45,17 +46,23 @@ class KnowledgeBase:
             print("No existing vector store found. Will create new one.")
             self.vector_store = None
 
+        temperature = 0.4
         match config.llm.llm_type:
             case LLMType.ANTHROPIC:
                 self.llm = ChatAnthropic(
-                    model="claude-3-5-sonnet-20241022",
+                    model=config.llm.model,
                     anthropic_api_key=config.llm.api_key.get_secret_value(),
-                    temperature=0,
+                    temperature=temperature,
                 )
-            case LLMType.OPENAI:
-                raise NotImplementedError("OpenAI API not yet supported")
-            case LLMType.LOCAL:
-                raise NotImplementedError("Local LLM not yet supported")
+            case LLMType.OLLAMA:
+                self.llm = ChatOllama(
+                    model=config.llm.model,
+                    client_kwargs={
+                        "headers": {"X-API-Key": config.llm.api_key.get_secret_value()}
+                    },
+                    base_url=config.llm.base_url,
+                    temperature=temperature,
+                )
             case _:
                 raise ValueError(f"Unknown LLM type: {config.llm.type}")
 

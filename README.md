@@ -6,6 +6,7 @@ A personal knowledge base
 
 This project uses `uv`:
 
+- `uv venv`
 - `source .venv/bin/activate`
 - `uv pip install -e .` - make an editable kb project
     - Note: pytorch 2.2 is used to support macOS x86_64
@@ -18,6 +19,8 @@ This project uses `uv`:
 
 Make sure the following environment variables are specified in `config.toml`
 
+### Anthropic
+
 ```
 [obsidian]
 vault="/path/to/vault"
@@ -25,6 +28,21 @@ vault="/path/to/vault"
 [llm]
 type="anthropic"
 api_key="secret"
+```
+
+### Ollama
+
+See [docs](./docs) for instructions on how to set up ollama.
+
+```
+[obsidian]
+vault="/path/to/vault"
+
+[llm]
+llm_type="ollama"
+model="deepseek-r1:32b"
+api_key="secret"
+base_url="https://ollama.example.com/"
 ```
 
 ## Tests

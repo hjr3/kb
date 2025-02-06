@@ -13,6 +13,7 @@ dependencies = [
     "langchain-anthropic>=0.3.5",
     "langchain-chroma>=0.2.1",
     "langchain-huggingface>=0.1.2",
+    "langchain-ollama>=0.2.3",
     "markdown>=3.7",
     "openapi-python-client>=0.23.1",
     "pytest-asyncio>=0.25.3",

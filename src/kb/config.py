@@ -6,13 +6,14 @@ from pydantic import BaseModel, SecretStr
 
 class LLMType(str, Enum):
     ANTHROPIC = "anthropic"
-    OPENAI = "openai"
-    LOCAL = "local"
+    OLLAMA = "ollama"
 
 
 class LLMConfig(BaseModel):
     llm_type: LLMType
+    model: str
     api_key: SecretStr
+    base_url: str | None = None
 
 
 class ObsidianConfig(BaseModel):
