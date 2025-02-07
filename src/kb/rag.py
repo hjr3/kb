@@ -30,7 +30,8 @@ class KnowledgeBase:
                 ("###", "header3"),
                 ("####", "header4"),
                 ("#####", "header5"),
-            ]
+            ],
+            strip_headers=False,
         )
 
         self.text_splitter = RecursiveCharacterTextSplitter(
