@@ -4,11 +4,30 @@ from typing import List
 import yaml
 from datetime import datetime
 from langchain.schema import Document
+from langchain.text_splitter import (
+    MarkdownHeaderTextSplitter,
+    RecursiveCharacterTextSplitter,
+)
 
 
 class ObsidianLoader:
     def __init__(self, vault_path: str):
         self.vault_path = Path(vault_path)
+
+        self.header_splitter = MarkdownHeaderTextSplitter(
+            headers_to_split_on=[
+                ("#", "header1"),
+                ("##", "header2"),
+                ("###", "header3"),
+                ("####", "header4"),
+                ("#####", "header5"),
+            ],
+            strip_headers=False,
+        )
+
+        self.text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=500, chunk_overlap=50, separators=["\n\n", "\n", ". ", " ", ""]
+        )
 
     def _parse_frontmatter(self, content: str) -> tuple[dict, str]:
         """Extract YAML frontmatter from markdown content"""
@@ -84,3 +103,53 @@ class ObsidianLoader:
                 print(f"Error processing {file_path}: {e}")
 
         return documents
+
+    def split_documents(self, documents: List[Document]) -> List[Document]:
+        """Split large documents into smaller chunks"""
+
+        splits = []
+        for doc in documents:
+            doc_splits = self._split_document(doc)
+            splits.extend(doc_splits)
+        return splits
+
+    def _split_document(self, doc: Document) -> List[Document]:
+        """Split a document using header-based splitting first, then chunk if needed"""
+        try:
+            splits = self.header_splitter.split_text(doc.page_content)
+
+            documents = []
+            for split in splits:
+                enhanced_metadata = doc.metadata.copy()
+                enhanced_metadata.update(
+                    {
+                        f"header_{level}": split.metadata.get(level, "")
+                        for level in [
+                            "header1",
+                            "header2",
+                            "header3",
+                            "header4",
+                            "header5",
+                        ]
+                    }
+                )
+
+                # If the chunk is still too large, split it further
+                if len(split.page_content) > 500:
+                    subsplits = self.text_splitter.split_text(split.page_content)
+                    for subsplit in subsplits:
+                        documents.append(
+                            Document(page_content=subsplit, metadata=enhanced_metadata)
+                        )
+                else:
+                    documents.append(
+                        Document(
+                            page_content=split.page_content, metadata=enhanced_metadata
+                        )
+                    )
+
+            return documents
+
+        except Exception as e:
+            print(f"Error splitting document {doc.metadata.get('source')}: {e}")
+            return self.text_splitter.split_documents([doc])

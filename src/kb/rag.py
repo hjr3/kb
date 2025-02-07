@@ -1,12 +1,7 @@
 from typing import List, Dict, Any, Optional
-from langchain.text_splitter import (
-    MarkdownHeaderTextSplitter,
-    RecursiveCharacterTextSplitter,
-)
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langchain_chroma import Chroma
-from langchain.schema import Document
 from langchain_ollama import ChatOllama
 import os
 
@@ -21,21 +16,6 @@ class KnowledgeBase:
 
         self.embeddings = HuggingFaceEmbeddings(
             model_name="all-MiniLM-L6-v2", model_kwargs={"device": "cpu"}
-        )
-
-        self.header_splitter = MarkdownHeaderTextSplitter(
-            headers_to_split_on=[
-                ("#", "header1"),
-                ("##", "header2"),
-                ("###", "header3"),
-                ("####", "header4"),
-                ("#####", "header5"),
-            ],
-            strip_headers=False,
-        )
-
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=500, chunk_overlap=50, separators=["\n\n", "\n", ". ", " ", ""]
         )
 
         if os.path.exists(persist_directory):
@@ -67,47 +47,6 @@ class KnowledgeBase:
             case _:
                 raise ValueError(f"Unknown LLM type: {config.llm.type}")
 
-    def _split_document(self, doc: Document) -> List[Document]:
-        """Split a document using header-based splitting first, then chunk if needed"""
-        try:
-            splits = self.header_splitter.split_text(doc.page_content)
-
-            documents = []
-            for split in splits:
-                enhanced_metadata = doc.metadata.copy()
-                enhanced_metadata.update(
-                    {
-                        f"header_{level}": split.metadata.get(level, "")
-                        for level in [
-                            "header1",
-                            "header2",
-                            "header3",
-                            "header4",
-                            "header5",
-                        ]
-                    }
-                )
-
-                # If the chunk is still too large, split it further
-                if len(split.page_content) > 500:
-                    subsplits = self.text_splitter.split_text(split.page_content)
-                    for subsplit in subsplits:
-                        documents.append(
-                            Document(page_content=subsplit, metadata=enhanced_metadata)
-                        )
-                else:
-                    documents.append(
-                        Document(
-                            page_content=split.page_content, metadata=enhanced_metadata
-                        )
-                    )
-
-            return documents
-
-        except Exception as e:
-            print(f"Error splitting document {doc.metadata.get('source')}: {e}")
-            return self.text_splitter.split_documents([doc])
-
     def initialize_vector_store(self, force_reload: bool = False) -> Optional[int]:
         """Load notes and initialize the vector store if it doesn't exist or force_reload is True"""
         if not force_reload and self.vector_store is not None:
@@ -119,10 +58,7 @@ class KnowledgeBase:
         print(f"Loaded {len(documents)} documents")
 
         print("Splitting documents...")
-        splits = []
-        for doc in documents:
-            doc_splits = self._split_document(doc)
-            splits.extend(doc_splits)
+        splits = self.loader.split_documents(documents)
         print(f"Created {len(splits)} chunks")
 
         print("Creating vector store...")
